@@ -1,0 +1,9 @@
+{
+   "valid": true,
+   "opened_at": 1630303200,
+   "closed_at": 1630303300,
+   "detail": "A new version is available, please update your game.",
+   "force_update_op_at": 1686038400,
+   "force_update_cl_at": 0,
+   "force_update_version":"1.3.0"
+}

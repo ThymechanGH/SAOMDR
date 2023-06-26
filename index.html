@@ -1,0 +1,510 @@
+<!doctype html>
+<html>
+   <head>
+      <meta name="viewport" content="width=device-width, user-scalable=no">
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+      <script src="ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+      <script src="ajax/libs/jqueryui/1.12.0/jquery-ui.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="en/css/jquery.fullPage.css"/>
+      <link rel="stylesheet" type="text/css" href="en/css/elastislide.css"/>
+      <link href="en/css/mainalt.css" rel="stylesheet" type="text/css">
+      <link rel="stylesheet" type="text/css" href="en/css/lity.css"/>
+      <script type="text/javascript" src="en/js/jquery.fullPage.js"></script>
+      <script type="text/javascript" src="en/js/lity.min.js"></script>
+      <script type="text/javascript" src="en/js/transformie.js"></script>
+      <script type="text/javascript" src="en/js/common.js"></script>
+	  <title>Sword Art Online: Memory Defrag</title>
+	  <link rel="icon" type="image/x-icon" href="favicon.ico">
+   </head>
+   <body>
+      <div id="toosmall"></div>
+      <canvas id="js-particles" class="particles" width="1600px" height="850px"></canvas>
+      <div id="backgroundsky"></div>
+      <div class="overlay transition"></div>
+      <div id="fullpage">
+         <div class="section " id="home">
+            <div class="shell">
+               <div class="logo"><img src="en/img/logo.png" alt="" id="logo" class="transition3"/></div>
+               <div class="character"><img src="en/img/character.png" alt="" class="transition5" id="characters"/></div>
+            </div>
+         </div>
+      </div>
+      <div id="footer">
+         <div class="legalopen" id="legalbutton"></div>
+         <div class="fttr-text">
+            <div id="terms"><a href="http://legal.bandainamcoent.co.jp/terms">Terms of Service</a></div>
+            <div id="privacy"><a href="http://legal.bandainamcoent.co.jp/privacy">Privacy Policy</a></div>
+            <div id="terms"></div>
+            <p>©2017 REKI KAWAHARA/KADOKAWA CORPORATION AMW/SAO-A Project<br>
+            ©BANDAI NAMCO Entertainment Inc.<br>
+            Illustrated by abec
+            </p>
+            <div class="legalfttr">
+               <table>
+                  <tr>
+                     <td></td>
+                     <td><img src="en/img/images/legalfttr_17.png" alt="" id="namcologo"/></td>
+                     <td></td>
+                  </tr>
+               </table>
+            </div>
+         </div>
+      </div>
+      <script src="en/js/modernizr.custom.17475.js"></script>
+      <script type="text/javascript" src="en/js/jquery.elastislide.js"></script>
+      <script type="text/javascript" src="en/js/jquerypp.custom.js"></script>
+      <script src="en/js/lightbox.js"></script>
+      <script>
+         var ua = navigator.userAgent.toLowerCase();
+         var isAndroid = ua.indexOf("android") > -1;
+         if(isAndroid) {
+             $('body').addClass('android')
+         };
+         $( function()
+         	{
+         		var
+         			// ACTIVITY INDICATOR
+         			activityIndicatorOn = function()
+         			{
+         				$( '<div id="imagelightbox-loading"><div><div></div></div></div>' ).appendTo( 'body' );
+         			},
+         			activityIndicatorOff = function()
+         			{
+         				$( '#imagelightbox-loading' ).remove();
+         			},
+         			// OVERLAY
+         			overlayOn = function()
+         			{
+         				$( '<div id="imagelightbox-overlay"></div>' ).appendTo( 'body' );
+         			},
+         			overlayOff = function()
+         			{
+         				$( '#imagelightbox-overlay' ).remove();
+         			},
+         			// CLOSE BUTTON
+         			closeButtonOn = function( instance )
+         			{
+         				$( '<button type="button" id="imagelightbox-close" title="Close"></button>' ).appendTo( 'body' ).on( 'click touchend', function(){ $( this ).remove(); instance.quitImageLightbox(); return false; });
+         			},
+         			closeButtonOff = function()
+         			{
+         				$( '#imagelightbox-close' ).remove();
+         			},
+         			// CAPTION
+         			captionOn = function()
+         			{
+         				var description = $( 'a[href="' + $( '#imagelightbox' ).attr( 'src' ) + '"] img' ).attr( 'alt' );
+         				if( description.length > 0 )
+         					$( '<div id="imagelightbox-caption">' + description + '</div>' ).appendTo( 'body' );
+         			},
+         			captionOff = function()
+         			{
+         				$( '#imagelightbox-caption' ).remove();
+         			},
+         			// NAVIGATION
+         			navigationOn = function( instance, selector )
+         			{
+         				var images = $( selector );
+         				if( images.length )
+         				{
+         					var nav = $( '<div id="imagelightbox-nav"></div>' );
+         					for( var i = 0; i < images.length; i++ )
+         						nav.append( '<button type="button"></button>' );
+         					nav.appendTo( 'body' );
+         					nav.on( 'click touchend', function(){ return false; });
+         					var navItems = nav.find( 'button' );
+         					navItems.on( 'click touchend', function()
+         					{
+         						var $this = $( this );
+         						if( images.eq( $this.index() ).attr( 'href' ) != $( '#imagelightbox' ).attr( 'src' ) )
+         							instance.switchImageLightbox( $this.index() );
+         						navItems.removeClass( 'active' );
+         						navItems.eq( $this.index() ).addClass( 'active' );
+         						return false;
+         					})
+         					.on( 'touchend', function(){ return false; });
+         				}
+         			},
+         			navigationUpdate = function( selector )
+         			{
+         				var items = $( '#imagelightbox-nav button' );
+         				items.removeClass( 'active' );
+         				items.eq( $( selector ).filter( '[href="' + $( '#imagelightbox' ).attr( 'src' ) + '"]' ).index( selector ) ).addClass( 'active' );
+         			},
+         			navigationOff = function()
+         			{
+         				$( '#imagelightbox-nav' ).remove();
+         			},
+         			// ARROWS
+         			arrowsOn = function( instance, selector )
+         			{
+         				var $arrows = $( '<button type="button" class="imagelightbox-arrow imagelightbox-arrow-left"></button><button type="button" class="imagelightbox-arrow imagelightbox-arrow-right"></button>' );
+         				$arrows.appendTo( 'body' );
+         				$arrows.on( 'click touchend', function( e )
+         				{
+         					e.preventDefault();
+         					var $this	= $( this ),
+         						$target	= $( selector + '[href="' + $( '#imagelightbox' ).attr( 'src' ) + '"]' ),
+         						index	= $target.index( selector );
+         					if( $this.hasClass( 'imagelightbox-arrow-left' ) )
+         					{
+         						index = index - 1;
+         						if( !$( selector ).eq( index ).length )
+         							index = $( selector ).length;
+         					}
+         					else
+         					{
+         						index = index + 1;
+         						if( !$( selector ).eq( index ).length )
+         							index = 0;
+         					}
+         					instance.switchImageLightbox( index );
+         					return false;
+         				});
+         			},
+         			arrowsOff = function()
+         			{
+         				$( '.imagelightbox-arrow' ).remove();
+         			};
+         		//	WITH OVERLAY & ACTIVITY INDICATION
+         		var selectorG = 'a[data-imagelightbox="b"]';
+         		var instanceG = $( selectorG ).imageLightbox(
+         		{
+         			onStart: 	 function() { overlayOn();arrowsOn( instanceG, selectorG ); },
+         			onEnd:	 	 function() { arrowsOff(); overlayOff(); activityIndicatorOff(); },
+         			onLoadStart: function() { activityIndicatorOn(); },
+         			onLoadEnd:	 function() { $( '.imagelightbox-arrow' ).css( 'display', 'block' ); activityIndicatorOff(); }
+         		});
+         	$( 'a[data-imagelightbox="a"]' ).imageLightbox(
+         		{
+         			onStart: 	 function() { overlayOn(); },
+         			onEnd:	 	 function() { overlayOff(); activityIndicatorOff(); },
+         			onLoadStart: function() { activityIndicatorOn(); },
+         			onLoadEnd:	 function() { activityIndicatorOff(); }
+         		});
+         	});
+      </script>
+      <script type="text/javascript">
+         $(document).ready(function() {
+         //setTimeout( function(){ lity('#secondanna');}, 2000);
+         $('#load').addClass('go');	
+         $('#fullpage').fullpage({
+         				'verticalCentered': false,
+         				'css3': true,
+         				'navigation': false,
+         				'afterLoad': function(anchorLink, index){
+         					if(index == 1){
+         						$('#characters').addClass('on');$('#logo').addClass('on');
+         					}
+         				},
+         				'onLeave': function(index, nextIndex, direction){
+         					if (index == 1 && direction == 'down')
+         					{
+         						$('#characters').addClass('active');
+         						$('#logo').addClass('active');
+         						$('#hero').addClass('slidein');
+         						$('#screenc').addClass('active');
+         						$('.section').eq(index -1).removeClass('moveDown').addClass('moveUp');
+         					}
+         					else if (index == 2 && direction == 'up')
+         					{$('#characters').removeClass('active');$('#logo').removeClass('active');$('#hero').removeClass('slidein');$('#hero2').removeClass('slidein');}
+         				else if (index == 2 && direction == 'down')
+         					{$('#hero').removeClass('slidein');$('#logo').removeClass('active');$('#hero2').addClass('slidein');$('#screenc').removeClass('active');$('#videoc').addClass('active');}
+         					else if(index == 3 && direction == 'up'){
+         						$('#screenc').addClass('active');$('#hero').addClass('slidein');$('#hero2').removeClass('slidein');$('#videoc').removeClass('active');
+         					}
+         					else if(index == 3 && direction == 'down'){
+         						$('#hero3').addClass('slidein');$('#pre').addClass('active');$('#hero2').removeClass('slidein');$('#videoc').removeClass('active');
+         					}
+         else if(index == 4 && direction == 'up'){
+         						$('#hero2').addClass('slidein');$('#hero3').removeClass('slidein');$('#videoc').addClass('active');$('#pre').removeClass('active');
+         					}
+         				}
+         			});
+         			$('#screennav').click(
+                function(){ $('.minimenu').removeClass('active'); 
+         	   $('.dropdown-menu').css('display', '');}
+         );
+         $('#videonav').click(
+                function(){ $('.minimenu').removeClass('active'); 
+         	   $('.dropdown-menu').css('display', '');}
+         );
+         $('#featurenav').click(
+                function(){ $('.minimenu').removeClass('active'); 
+         	   $('.dropdown-menu').css('display', '');}
+         );
+         $('#signupnav').click(
+                function(){ $('.minimenu').removeClass('active'); 
+         	   $('.dropdown-menu').css('display', '');}
+         );
+         			$('.legalopen').click(
+                function(){ $('#footer').toggleClass('open'); $(this).toggleClass('close'); }
+         );
+         $('#legalbutton.close').click(
+                function(){ $('#footer').removeClass('open'); $(this).removeClass('close'); }
+         );
+             $('div.legalopen').on('touchstart', function (e) {
+                 'use strict'; //satisfy code inspectors
+                 var hold = $('#footer'); //preselect the link
+         		var closeit=$('.legalopen');
+                 if (hold.hasClass('open')) {
+                     $(hold).removeClass('open'); 
+                 } else {
+                     hold.addClass('open');
+                     e.preventDefault();
+                      //extra, and to make sure the function has consistent return points
+                 }
+         		if (closeit.hasClass('close')) {
+                     $(closeit).removeClass('close');
+                 } else {
+                     closeit.addClass('close');
+                     e.preventDefault();
+                      //extra, and to make sure the function has consistent return points
+                 }
+             });
+         		});
+         		$(window).scroll(function() {
+         // 100 = The point you would like to fade the nav in.
+         	if ($(window).scrollTop() > 100 ){
+             $('.minilogo').addClass('showbttn');
+          		$('.overlay').addClass('show');
+             $('.buttons').addClass('shrink');
+           } else {
+         	  $('.minilogo').removeClass('showbttn');
+             $('.buttons').removeClass('shrink');
+             $('.overlay').removeClass('show');
+          	};   	
+         });
+         $('.scroll').on('click', function(e){		
+         		e.preventDefault()
+           $('html, body').animate({
+               scrollTop : $(this.hash).offset().top
+             }, 1500);
+         });
+         	
+      </script>
+      <script type="text/javascript">
+         $( '#carousel' ).elastislide();
+         $(function() {
+         $('a[href*="#"]:not([href="#"])').click(function() {
+          if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+            var target = $(this.hash);
+            target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+            if (target.length) {
+              $('html, body').animate({
+                scrollTop: target.offset().top
+              }, 1000);
+              return false;
+            }
+          }
+         });
+         });
+         var PARTICLE_QUANT = 1100;
+         var FPS = 20;
+         var BOUNCE = -1;
+         var PARTICLE_COLOR = 'rgb(0, 255, 204 )';
+         var ARC_RADIUS = .1;
+         /**
+         * Particles lib class
+         *
+         * @class Particles
+         * @constructor
+         */
+         var Particles = function($element) {
+         // if element doesnt exist in the DOM return early
+         if ($element.length === 0) { return; }
+            /**
+             * A reference to the containing DOM element.
+             *
+             * @default null
+             * @property {jQuery} $element
+             * @public
+             */
+            this.$element = $element;
+            /**
+             * Initial timestamp use to for baseline of animation loop
+             *
+             * @default null
+             * @property lastTimeStamp
+             * @type {number}
+             * @public
+             */
+            this.lastTimeStamp = null;
+            /**
+             * array representing particles
+             *
+             * @default empty array
+             * @property lastTimeStamp
+             * @type {array}
+             * @public
+             */
+            this.particles = [];
+            this.init();
+         };
+         var proto = Particles.prototype;
+         /**
+         * Initializes the class.
+         * Runs a single setupHandlers call, followed by createChildren and layout.
+         * Exits early if it is already initialized.
+         *
+         * @method init
+         * @private
+         */
+         proto.init = function() {
+         this.createChildren()
+          .layout()
+          .enable();
+         };
+         /**
+         * Create any child objects or references to DOM elements.
+         * Should only be run on initialization of the view.
+         *
+         * @method createChildren
+         * @returns {Particles}
+         * @private
+         */
+         proto.createChildren = function() {
+            this.canvas = this.$element[0];
+            this.context = this.canvas.getContext('2d');
+            this.canvasWidth = this.canvas.width;
+            this.canvasHeight = this.canvas.height;
+            this.lastTimeStamp = new Date().getTime();
+            return this;
+         };
+         /**
+         * handles layout of DOM elements
+         *
+         * @method layout
+         * @returns {ParticlesController}
+         * @private
+         */
+         proto.layout = function() {
+            window.requestAnimFrame = (function() {
+                return  window.requestAnimationFrame       ||
+                window.webkitRequestAnimationFrame         ||
+                window.mozRequestAnimationFrame;
+            })();
+            return this;
+         };
+         /**
+         * Remove any child objects or references to DOM elements.
+         *
+         * @method removeChildren
+         * @returns {Particles}
+         * @public
+         */
+         proto.removeChildren = function() {
+            this.context = null;
+            this.canvasWidth = null;
+            this.canvasHeight = null;
+            this.lastTimeStamp = null;
+            return this;
+         };
+         /**
+         * Enables the component.
+         * Performs any event binding to handlers.
+         * Exits early if it is already enabled.
+         *
+         * @method enable
+         * @public
+         */
+         proto.enable = function() {
+            this.createParticleData();
+            this.renderLoop();
+         };
+         //////////////////////////////////////////////////////////////////////////////////
+         // HELPER METHODS
+         //////////////////////////////////////////////////////////////////////////////////
+         /**
+         * Creates particle data objects
+         *
+         * @method createParticleData
+         * @private
+         */
+         proto.createParticleData = function() {
+            var i = 0;
+            var l = PARTICLE_QUANT;
+            for(; i < l; i++) {
+                this.particles[i] = {};
+                this.setParticleData(this.particles[i]);
+            }
+         };
+         /**
+         * Sets the base particle data
+         *
+         * @method setParticleData
+         * @private
+         */
+         proto.setParticleData = function(particle) {
+            particle.x = Math.random() * this.canvasWidth;
+            particle.y = Math.random() * this.canvasHeight;
+            particle.vx = (Math.random()) - 0.5;
+            particle.vy = (Math.random()) - 0.5;
+         };
+         /**
+         * Updates the particle data object
+         *
+         * @method update
+         * @private
+         */
+         proto.update = function() {
+            var i = 0;
+            var l = PARTICLE_QUANT;
+            for (; i < l; i++) {
+                var particle = this.particles[i];
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                if (particle.x > this.canvasWidth) {
+                    particle.x = this.canvasWidth;
+                    particle.vx *= BOUNCE;
+                } else if (particle.x < 0) {
+                    particle.x = 0;
+                    particle.vx *= BOUNCE;
+                }
+                if (particle.y > this.canvasHeight) {
+                    particle.y = this.canvasHeight;
+                    particle.vy *= BOUNCE;
+                } else if (particle.y < 0) {
+                    particle.y = 0;
+                    particle.vy *= BOUNCE;
+                }
+            }
+         };
+         /**
+         * Renders the particle on the canvas
+         *
+         * @method draw
+         * @private
+         */
+         proto.draw = function() {
+            var i = 0;
+            if (!this.context) {
+                return;
+            }
+            this.context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+            this.context.strokeStyle = PARTICLE_COLOR;
+            for(; i < PARTICLE_QUANT; i++) {
+                var particle = this.particles[i];
+                this.context.save();
+                this.context.beginPath();
+                this.context.arc(particle.x, particle.y, ARC_RADIUS, 0, Math.PI * 2);
+                this.context.stroke();
+                this.context.restore();
+            }
+         };
+         /**
+         * Creates the animation loop
+         *
+         * @method renderLoop
+         * @private
+         */
+         proto.renderLoop = function() {
+            requestAnimationFrame(this.renderLoop.bind(this));
+            this.update();
+            this.draw();
+         };
+         var particles = new Particles($('#js-particles'));
+              
+      </script>
+   </body>
+</html>
