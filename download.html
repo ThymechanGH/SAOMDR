@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="jp">
+   <head>
+      <!--Jk, I'll put the real download link later lol.-->
+      <title>DOWNLOADING...</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <meta name="format-detection" content="telephone=no"/>
+      <meta name="robots" content="noindex,nofollow">
+      <link rel="stylesheet" type="text/css" media="screen" href="css/style.css?160519">
+      <script>
+         let secondsLeft = 5;
+         const updateCountdown = () => {
+             secondsLeft--;
+             document.getElementById("countdown").innerHTML = secondsLeft;
+             if (secondsLeft === 0) {
+                 window.location.href = "https://youtu.be/watch?v=dQw4w9WgXcQ";
+                 document.getElementById("heading").style.display = "none";
+                 document.getElementById("link").style.display = "block";
+             }
+         };
+         setInterval(updateCountdown, 1000);
+      </script>
+   </head>
+   <body>
+      <div class="headPD">
+         <dl class="m_round_detail">
+            <dt>DOWNLOADING...</dt>
+            <dd>
+               <div>
+                  <p style="text-align: center;" id = "heading">Redirecting to the download link in <strong><span id="countdown">5</span></strong> seconds...</p>
+                  <p style="text-align: center;" id = "link" hidden>Click <a href="https://youtu.be/watch?v=dQw4w9WgXcQ">here</a> if you are not automatically redirected.</p>
+                  <hr>
+                  <a href="https://youtu.be/watch?v=dQw4w9WgXcQ"><img src="https://thymechangh.github.io/SAOMDR/images/more_deban.png"></a>
+                  <hr>
+               </div>
+            </dd>
+         </dl>
+      </div>
+   </body>
+</html>
